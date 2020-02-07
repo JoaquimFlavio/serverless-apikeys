@@ -1,0 +1,30 @@
+service: serverless-apikey
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-2
+
+  # Defina aqui o nome das apiKeys que vc deseja criar.
+  apiKeys:
+    - myClientOne
+    - myClientTwo
+  usagePlan:
+    quota:
+      period: MONTH # Periodo desejado
+      limit: 5000 # Numero maximo de requisiçoes do periodo
+      offset: 2
+    throttle:
+      burstLimit: 200 # Numero maximo de requisições por seção
+      rateLimit: 1    # Numero limite de requisiçoes por segundo
+  
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+          # É necessario definir como private o recurso API-key.
+          private: true
